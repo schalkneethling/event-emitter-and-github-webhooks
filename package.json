@@ -1,0 +1,25 @@
+{
+  "name": "event-emitter-and-github-webhooks",
+  "version": "1.0.0",
+  "description": "Using EventEmitter in Nodejs with GitHub webhooks",
+  "export": "./index.js",
+  "type": "module",
+  "scripts": {
+    "start": "node index.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/schalkneethling/event-emitter-and-github-webhooks.git"
+  },
+  "keywords": [
+    "nodejs",
+    "github",
+    "webhooks"
+  ],
+  "author": "Schalk Neethling <schalk.neethling@mechanical-ink.co.za>",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/schalkneethling/event-emitter-and-github-webhooks/issues"
+  },
+  "homepage": "https://github.com/schalkneethling/event-emitter-and-github-webhooks#readme"
+}
