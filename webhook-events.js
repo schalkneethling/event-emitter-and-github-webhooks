@@ -14,3 +14,10 @@ export function ouputNewIssueInfo(props) {
   console.info(openedBy);
   console.info(newIssueCount);
 }
+
+export function ouputPRIssueInfo(props) {
+  const message = `New pull request opened: ${props.pullRequestTitle}`;
+  const openedBy = `Issue opened by ${props.username}.`;
+  console.info(message);
+  console.info(openedBy);
+}

@@ -1,6 +1,10 @@
 import http from "http";
 
-import { ouputNewIssueInfo, WebhookEvents } from "./webhook-events.js";
+import {
+  ouputNewIssueInfo,
+  ouputPRIssueInfo,
+  WebhookEvents,
+} from "./webhook-events.js";
 
 /**
  * Listens for the `data` events on the request as chunks of data arrivesdata once
@@ -22,8 +26,13 @@ function getData(req) {
 }
 
 const webhookEvents = new WebhookEvents();
+
 webhookEvents.on("issue-opened", (props) => {
   ouputNewIssueInfo(props);
+});
+
+webhookEvents.on("pr-opened", (props) => {
+  ouputPRIssueInfo(props);
 });
 
 http
@@ -37,7 +46,6 @@ http
         // as data arrives and an `end` event when all data has arrived
         getData(req).then((data) => {
           if (data) {
-            console.log(data);
             const jsonData = JSON.parse(data);
             if (jsonData.issue && jsonData.action === "opened") {
               const props = {
@@ -46,6 +54,12 @@ http
                 openIssueCount: jsonData.repository.open_issues_count,
               };
               webhookEvents.emit("issue-opened", props);
+            } else if (jsonData.pull_request && jsonData.action === "opened") {
+              const props = {
+                pullRequestTitle: jsonData.pull_request.title,
+                username: jsonData.pull_request.user.login,
+              };
+              webhookEvents.emit("pr-opened", props);
             }
           }
         });
