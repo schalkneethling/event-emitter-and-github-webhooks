@@ -1,6 +1,6 @@
 import http from "http";
 
-import { WebhookEvents } from "./webhook-events.js";
+import { ouputNewIssueInfo, WebhookEvents } from "./webhook-events.js";
 
 /**
  * Listens for the `data` events on the request as chunks of data arrivesdata once
@@ -21,6 +21,11 @@ function getData(req) {
   });
 }
 
+const webhookEvents = new WebhookEvents();
+webhookEvents.on("issue-opened", (props) => {
+  ouputNewIssueInfo(props);
+});
+
 http
   .createServer((req, res) => {
     if (req.url === "/") {
@@ -32,16 +37,23 @@ http
         // as data arrives and an `end` event when all data has arrived
         getData(req).then((data) => {
           if (data) {
-            const webhookEvents = new WebhookEvents();
-
-            if (data.issue && data.action === "opened") {
-              webhookEvents.emit("issue-opened", data);
+            console.log(data);
+            const jsonData = JSON.parse(data);
+            if (jsonData.issue && jsonData.action === "opened") {
+              const props = {
+                issueName: jsonData.issue.title,
+                username: jsonData.issue.user.login,
+                openIssueCount: jsonData.repository.open_issues_count,
+              };
+              webhookEvents.emit("issue-opened", props);
             }
           }
         });
+        res.end();
+      } else if (req.method === "GET") {
+        res.write("Waiting for webhook events...");
+        res.end();
       }
-      res.write("Hello payload");
-      res.end();
     }
   })
   .listen(3000);
